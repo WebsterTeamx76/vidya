@@ -1,4 +1,4 @@
-import { UploadDropzone } from "@/lib/uploadThing";
+import { UploadDropzone } from "@/lib/uploadthing";
 import toast from "react-hot-toast";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 
