@@ -8,6 +8,7 @@ import { TitleForm } from "./_components/title-form";
 import { DescriptionForm } from "./_components/description-form";
 import { LayoutDashboard } from "lucide-react";
 import { ImageForm } from "./_components/image-form";
+import { CategoryForm } from "./_components/category-form";
 
 const CourseIdPage = async ({
     params
@@ -26,6 +27,12 @@ const CourseIdPage = async ({
        
     });
     
+    const categories = await db.category.findMany({
+        orderBy: {
+            name: "asc"
+        },
+    });
+
 
     if (!course) {
       
@@ -85,6 +92,14 @@ const CourseIdPage = async ({
                         <ImageForm
                             initialData={course}
                             courseId={course.id}
+                        />
+                          <CategoryForm
+                            initialData={course}
+                            courseId={course.id}
+                            options={categories.map((category) => ({
+                                label: category.name,
+                                value: category.id,
+                            }))}
                         />
                     </div>
                    
