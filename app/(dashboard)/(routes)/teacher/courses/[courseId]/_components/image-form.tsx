@@ -75,6 +75,7 @@ export const ImageForm = ({
         ):
         (
           <div className="relative aspect-video mt-2">
+            <>{alert(initialData.imageUrl)}</>
             <Image 
               alt="Upload"
               fill
@@ -91,7 +92,6 @@ export const ImageForm = ({
           endpoint="courseImage"
           onChange={(url)=>{
             if(url){
-              alert(url.toString())
               onSubmit({imageUrl:url.toString()});
             }
           }}
