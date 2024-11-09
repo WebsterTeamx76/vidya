@@ -3,11 +3,23 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { Categories } from "./_components/categories";
 import { SearchInput } from "@/components/search-input";
+import { CoursesList } from "@/components/courses-list";
+import { getCourses } from "@/actions/get-courses";
 
 
+interface SearchPageProps {
+  searchParams: {
+    title: string;
+    categoryId: string;
+  };
+}
 
-const SearchPage = async () => {
- 
+const SearchPage = async ({ searchParams }: SearchPageProps) => {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return redirect("/");
+  }
 
   const categories = await db.category.findMany({
     orderBy: {
@@ -15,7 +27,10 @@ const SearchPage = async () => {
     }
   });
 
-
+  const courses = await getCourses({
+    userId,
+    ...searchParams,
+  });
   return (
     <>
        <div className="px-6 pt-6 md:hidden md:md-0 block">
@@ -23,6 +38,7 @@ const SearchPage = async () => {
   </div>
   <div className="p-6 ">
   <Categories items={categories} />
+  <CoursesList items={courses} />
 </div>
     </>
    
