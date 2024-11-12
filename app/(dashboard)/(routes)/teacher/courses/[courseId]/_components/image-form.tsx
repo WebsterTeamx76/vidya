@@ -9,7 +9,8 @@ import { useRouter } from "next/navigation";
 import { Course } from "@prisma/client";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { FileUpload } from "@/components/file-upload";
+// import { FileUpload } from "@/components/file-upload";
+import { UploadDropzone } from "@/lib/uploadthing";
 
 interface ImageFormProps {
   initialData: Course;
@@ -51,15 +52,15 @@ export const ImageForm = ({
           {isEditing && (
             <>Cancel</>
           )}
-          
-          {!isEditing && !initialData.imageUrl &&(
+
+          {!isEditing && !initialData.imageUrl && (
             <>
               <PlusCircle className="h-4 w-4 mr-2" />
               Add an image
             </>
           )}
 
-          {!isEditing && initialData.imageUrl &&(
+          {!isEditing && initialData.imageUrl && (
             <>
               <Pencil className="h-4 w-4 mr-2" />
               Edit image
@@ -67,34 +68,36 @@ export const ImageForm = ({
           )}
         </Button>
       </div>
-      {!isEditing&&(
-        !initialData.imageUrl?(
+      {!isEditing && (
+        !initialData.imageUrl ? (
           <div className="flex items-center justify-center h-60 bg-slate-200 rounded-md">
-            <ImageIcon className="h-10 w-10 text-slate-500"/>
+            <ImageIcon className="h-10 w-10 text-slate-500" />
           </div>
-        ):
-        (
-          <div className="relative aspect-video mt-2">
-            <>{alert(initialData.imageUrl)}</>
-            <Image 
-              alt="Upload"
-              fill
-              className="object-cover rounded-md"
-              src={initialData.imageUrl}
-            />
-          </div>
-        )
+        ) :
+          (
+            <div className="relative aspect-video mt-2">
+              <>{alert(initialData.imageUrl)}</>
+              <Image
+                alt="Upload"
+                fill
+                className="object-cover rounded-md"
+                src={initialData.imageUrl}
+              />
+            </div>
+          )
       )
       }
       {isEditing && (
         <div>
-          <FileUpload
-          endpoint="courseImage"
-          onChange={(url)=>{
-            if(url){
-              onSubmit({imageUrl:url.toString()});
-            }
-          }}
+          <UploadDropzone
+            endpoint="courseImage"
+            onClientUploadComplete={(res) => {
+              if(res?.[0].url)
+                onSubmit({imageUrl:res?.[0].url.toString()});
+            }}
+            onUploadError={(error: Error) => {
+              alert(`ERROR! ${error.message}`);
+            }}
           />
           <div className="text-xs text-muted-foreground mt-4">
             16:9 aspect ratio recommended
